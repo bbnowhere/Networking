@@ -109,6 +109,72 @@ if (!isset($data['title'])) echo "⚠️ Missing title for row\n";
 | Data too long for date       | Timezone or timestamp text in date field | Use `YYYY-MM-DD` only                 |     |
 | Taxonomy not set             | Using label instead of term ID           | Load term by name and map `target_id` |     |
 
+
+Excellent question — understanding that is key when debugging CSVs 👇
+
 ---
 
-Would you like me to make this note into a **nicely formatted PDF “Debugging Drupal CSV Imports”** that you can keep or share with your team?
+### 🧩 **What is `NF` in `awk`?**
+
+In **`awk`**,
+👉 **`NF`** stands for **“Number of Fields”** in the *current line*.
+
+---
+
+### 💡 Example
+
+Suppose you have a CSV file like this:
+
+```csv
+Title,Email,Phone
+Developer,dev@example.com,9876543210
+Designer,design@example.com
+```
+
+Now run:
+
+```bash
+awk -F',' '{print NF}' jobs.csv
+```
+
+**Output:**
+
+```
+3
+3
+2
+```
+
+✅ The first two lines have **3 fields**,
+⚠️ The third line has **2 fields** — meaning it’s missing a column value.
+
+---
+
+### 🧠 Why It’s Useful
+
+When importing to Drupal (or any database), **every row must have the same number of fields** as the header.
+
+If one row doesn’t, `array_combine()` in your PHP script will fail with:
+
+```
+ValueError: array_combine(): Argument #1 ($keys) and argument #2 ($values) must have the same number of elements
+```
+
+So, this command helps you **quickly find malformed rows**.
+
+---
+
+### 🛠️ Pro Tip
+
+To find which line is wrong:
+
+```bash
+awk -F',' '{if (NF != 16) print "Line " NR " has " NF " fields"}' Job_Listings_Formatted.csv
+```
+
+* `NR` = line number
+* `NF` = number of fields on that line
+* Replace **16** with the correct number of columns in your header.
+
+---
+
