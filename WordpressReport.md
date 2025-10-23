@@ -153,14 +153,3 @@ du -sh * | sort -hr
 | Theme directory size            | Check with `du -sh /var/www/html/instem` |
 
 ---
-
-If you want, I can **also make a visual diagram/report** showing:
-
-* Static vs dynamic pages
-* Custom fields vs forms
-* Roles
-* Server setup
-
-This can be shared as a **one-page site audit**.
-
-Do you want me to do that?
