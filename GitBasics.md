@@ -294,6 +294,138 @@ git pull --allow-unrelated-histories
 
 Fix manually → commit
 
+Ah—this is an important catch 👍 and it explains something earlier.
+
+---
+
+# 🚨 What’s happening
+
+```text
+Composer could not find a composer.json file in /var/www/html/testdev
+```
+
+👉 Means:
+**Your Git repo is in the wrong folder**
+
+You currently have:
+
+```text
+/var/www/html/testdev/web   ← contains composer.json ❌ (wrong place)
+```
+
+But correct Drupal structure is:
+
+```text
+/var/www/html/testdev       ← should contain composer.json ✅
+/var/www/html/testdev/web   ← only public files
+```
+
+---
+
+# 🧠 Why this happened
+
+Earlier you initialized Git inside:
+
+```text
+/web
+```
+
+So:
+
+* GitHub repo now contains only `/web` contents
+* Missing:
+
+  * `composer.json`
+  * `config/`
+  * proper project root
+
+👉 That’s why Composer fails
+
+---
+
+We need to **fix your repo structure before CI/CD**
+
+---
+
+# ✅ Step-by-Step Fix (Clean way)
+
+## 🔧 Step 1: Go to correct root
+
+```bash
+cd /var/www/html/testdev
+```
+
+Check:
+
+```bash
+ls
+```
+
+👉 You should see:
+
+```text
+composer.json
+config
+web
+```
+
+---
+
+## 🔧 Step 2: Initialize Git here (correct place)
+
+```bash
+rm -rf .git   # remove old wrong repo (safe)
+git init
+```
+
+
+## 🔧 Step 3: Add proper .gitignore
+
+```bash
+nano .gitignore
+```
+
+Paste:
+
+```text
+/vendor/
+/web/sites/*/files/
+/web/sites/*/settings.php
+/web/sites/*/services.yml
+```
+
+---
+
+## 🔧 Step 4: Commit correctly
+
+```bash
+git add .
+git commit -m "Correct Drupal project structure"
+```
+
+---
+
+## 🔧 Step 5: Connect to GitHub
+
+```bash
+git remote add origin git@github.com:bbnowhere/testdev.git
+git branch -M main
+```
+
+---
+
+## 🔥 Step 6: Force push (IMPORTANT)
+
+Since old repo is wrong:
+
+```bash
+git push -u origin main --force
+```
+
+👉 This replaces incorrect structure on GitHub
+
+
+
 
 
 
