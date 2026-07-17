@@ -1,5 +1,3 @@
-Here’s your content converted into a clean, **GitHub-flavored Markdown (GFM)** format—properly structured, consistent, and ready to commit:
-
 # Mock Interview – Tricky Scenarios
 
 ## ⚡ Scenario 1: Works in Dev, Breaks in Prod
